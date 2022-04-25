@@ -1,5 +1,5 @@
-const baseUrl = "https://todoapi.mjclouds.com"
-// const baseUrl = "http://localhost:8080"
+// const baseUrl = "http://todo.zxycxy.cn"
+const baseUrl = "http://localhost:5001"
 
 let inputBox = document.querySelector('#input-box')
 let todoListDom = document.querySelector('.todo-list')
@@ -26,6 +26,7 @@ function postData(url, data) {
         body: JSON.stringify(data),
         headers: {
             'content-type': 'application/json',
+            Authorization: `Bearer ${localStorage.getItem("token")}`
         },
         method: 'POST',
         mode: "cors",
@@ -42,7 +43,7 @@ function postData(url, data) {
 function getData(url) {
     return fetch(baseUrl + url, {
         headers:{
-            token: localStorage.getItem("token")
+            Authorization: `Bearer ${localStorage.getItem("token")}`
         },
         method: 'GET',
         mode: "cors",
@@ -60,7 +61,7 @@ function putData(url, data) {
         body: JSON.stringify(data),
         headers: {
             'content-type': 'application/json',
-            token: localStorage.getItem("token")
+            Authorization: `Bearer ${localStorage.getItem("token")}`
         },
         method: 'PUT',
         mode: "cors",
@@ -78,7 +79,7 @@ function delData(url) {
     return fetch(baseUrl + url, {
         method: 'DELETE',
         headers: {
-            token: localStorage.getItem("token")
+            Authorization: `Bearer ${localStorage.getItem("token")}`
         },
         mode: "cors",
         credentials: "include"
@@ -102,13 +103,13 @@ function reNewView() {
         doneListDom.removeChild(doneListDom.firstChild);
     }
     for (const todoListElement of todoList) {
-        todoListDom.append(createItem(todoListElement.todo_name, todoListElement.ID))
+        todoListDom.append(createItem(todoListElement.content, todoListElement.id))
     }
     for (const doingListElement of doingList) {
-        doingListDom.append(createItem(doingListElement.todo_name, doingListElement.ID))
+        doingListDom.append(createItem(doingListElement.content, doingListElement.id))
     }
     for (const doneListElement of doneList) {
-        doneListDom.append(createItem(doneListElement.todo_name, doneListElement.ID))
+        doneListDom.append(createItem(doneListElement.content, doneListElement.id))
     }
 }
 
@@ -162,11 +163,11 @@ function reNew() {
     getData("/v1/todo/list").then(data => {
         for (let i = 0; i < data.data.length; i++) {
             let item = data.data[i]
-            if (item.status === 0) {
+            if (item.status === "todo") {
                 todoList.push(item)
-            } else if (item.status === 1) {
+            } else if (item.status === "doing") {
                 doingList.push(item)
-            } else if (item.status === 2) {
+            } else if (item.status === "done") {
                 doneList.push(item)
             }
         }
@@ -189,7 +190,7 @@ function ChangeStatus(e, status) {
 }
 
 function Add(name, des = "some desc", endTime = Math.round(new Date().getTime() / 1000)) {
-    putData("/v1/todo/add", {
+    postData("/v1/todo/add", {
         todo_name: name,
         description: des,
         end_time: endTime

@@ -1,5 +1,5 @@
-const baseUrl = "https://todoapi.mjclouds.com"
-// const baseUrl = "http://localhost:8080"
+// const baseUrl = "http://todo.zxycxy.cn"
+const baseUrl = "http://localhost:5001"
 
 
 let uname = document.querySelector("#username")
@@ -22,7 +22,6 @@ function postData(url, data) {
         },
         method: 'POST',
         mode: "cors",
-        credentials: "include",
     }).then(response => response.json())
 }
 
