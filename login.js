@@ -1,5 +1,5 @@
-// const baseUrl = "http://todo.zxycxy.cn"
-const baseUrl = "http://localhost:5001"
+const baseUrl = "http://todo.zxycxy.cn"
+// const baseUrl = "http://localhost:5001"
 
 
 let uname = document.querySelector("#username")
